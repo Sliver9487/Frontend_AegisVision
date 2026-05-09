@@ -2,7 +2,7 @@
   "name": "AegisVision Fall Detection Monitor",
   "short_name": "AegisVision",
   "description": "AI-powered fall alert system using YOLOv8 Pose with camera and screen capture clients.",
-  "start_url": "./main.html",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",

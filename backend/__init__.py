@@ -1,2 +1,0 @@
-"""AegisVision detection backend package."""
-

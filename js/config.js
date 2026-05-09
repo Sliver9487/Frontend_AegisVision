@@ -1,10 +1,10 @@
 const APP_CONFIG = {
-  DEFAULT_API_BASE_URL: "http://127.0.0.1:8000",
+  DEFAULT_API_BASE_URL: "https://your-space-name.hf.space",
   ANALYZE_ENDPOINT: "/analyze_frame",
   HEALTH_ENDPOINT: "/health",
   EVENTS_ENDPOINT: "/events",
   DEVICES_ENDPOINT: "/devices",
-  WS_ENDPOINT: "/ws",
+  GRADIO_CLIENT_CDN: "https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js",
   DEFAULT_INTERVAL_MS: 300,
   DEFAULT_JPEG_QUALITY: 0.7,
   DEFAULT_RESOLUTION: "480p"
@@ -22,8 +22,4 @@ function buildApiUrl(endpoint) {
   return `${getApiBaseUrl()}${endpoint}`;
 }
 
-function buildWsUrl() {
-  const base = getApiBaseUrl();
-  return base.replace(/^http/, "ws") + APP_CONFIG.WS_ENDPOINT;
-}
 

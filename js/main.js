@@ -1,7 +1,7 @@
 (function () {
   const state = {
     events: [],
-    wsClient: null
+    pollTimer: null
   };
 
   const els = {};
@@ -13,7 +13,7 @@
     els.apiBaseUrlInput.value = getApiBaseUrl();
     bindEvents();
     refreshEvents();
-    connectWebSocket();
+    startPolling();
   }
 
   function cacheElements() {
@@ -28,7 +28,8 @@
     els.saveApiUrlBtn.addEventListener("click", () => {
       setApiBaseUrl(els.apiBaseUrlInput.value);
       toast("API Base URL saved.");
-      connectWebSocket(true);
+      refreshEvents();
+      startPolling(true);
     });
     els.refreshBtn.addEventListener("click", refreshEvents);
     els.requestNotifyBtn.addEventListener("click", requestNotificationPermission);
@@ -49,11 +50,12 @@
 
   async function refreshEvents() {
     try {
-      const response = await fetch(`./fall_records/log.json?t=${Date.now()}`, { cache: "no-store" });
-      const events = response.ok ? await response.json() : [];
+      const [health, events] = await Promise.all([getHealth(), getEvents()]);
+      setBackendStatus(health?.status === "ok" ? "Online" : "Online", "online");
       state.events = normalizeEvents(events);
       render();
     } catch (error) {
+      setBackendStatus("Offline", "offline");
       toast(`Unable to load fall alerts: ${error.message}`);
       state.events = [];
       render();
@@ -145,43 +147,10 @@
     });
   }
 
-  function connectWebSocket(force = false) {
-    if (state.wsClient && !force) return;
-    state.wsClient?.close();
-    state.wsClient = new ReconnectingWebSocketClient({
-      onOpen: () => setBackendStatus("Online", "online"),
-      onClose: () => setBackendStatus("Offline", "offline"),
-      onMessage: async (message) => {
-        if (message.type === "fall_alert") {
-          upsertEvent(normalizeEvent(messageToEvent(message)));
-          render();
-          toast(`Fall Detected: ${message.device_id}`);
-          showFallNotification("Fall Detected", `${message.device_id} at ${message.time}`, { data: message });
-        }
-      }
-    });
-    state.wsClient.connect();
-  }
-
-  function messageToEvent(message) {
-    return {
-      event_id: message.event_id,
-      device_id: message.device_id,
-      source: message.source,
-      status: "Fall Detected",
-      timestamp: message.timestamp,
-      lastUpdate: message.time,
-      snapshot: message.snapshot,
-      fall_score: message.fall_score,
-      confidence: message.confidence,
-      debug: { message: message.message }
-    };
-  }
-
-  function upsertEvent(event) {
-    const index = state.events.findIndex((item) => item.event_id === event.event_id);
-    if (index >= 0) state.events[index] = { ...state.events[index], ...event };
-    else state.events.unshift(event);
+  function startPolling(force = false) {
+    if (state.pollTimer && !force) return;
+    if (state.pollTimer) clearInterval(state.pollTimer);
+    state.pollTimer = setInterval(refreshEvents, 5000);
   }
 
   function openEvent(eventId) {

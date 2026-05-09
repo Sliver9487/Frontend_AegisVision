@@ -38,7 +38,7 @@
         <strong id="latestAlertTime">--</strong>
       </article>
       <article class="metric-card">
-        <span>API Base URL</span>
+        <span>Hugging Face API URL</span>
         <input id="apiBaseUrlInput" class="inline-input" type="url" aria-label="API Base URL">
       </article>
     </section>
@@ -53,7 +53,7 @@
     <section class="section-block">
       <div class="section-heading">
         <h2>Fall Alert Events</h2>
-        <p>Only confirmed fall events are shown here. Normal, No Person, and Error frames are not listed.</p>
+        <p>Only confirmed fall events returned by the Hugging Face backend are shown here.</p>
       </div>
       <div id="alertList" class="alert-list empty-state">No fall alerts recorded yet.</div>
     </section>
@@ -79,7 +79,6 @@
   <script src="./js/config.js"></script>
   <script src="./js/api.js"></script>
   <script src="./js/notification.js"></script>
-  <script src="./js/websocket.js"></script>
   <script src="./js/main.js"></script>
 </body>
 </html>

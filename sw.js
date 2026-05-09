@@ -1,6 +1,6 @@
 const CACHE_NAME = "aegisvision-cache-v1";
 const STATIC_ASSETS = [
-  "./main.html",
+  "./index.html",
   "./camera.html",
   "./screen.html",
   "./manifest.json",
@@ -13,7 +13,6 @@ const STATIC_ASSETS = [
   "./js/camera.js",
   "./js/screen.js",
   "./js/notification.js",
-  "./js/websocket.js",
   "./js/api.js",
   "./img/aegisvision.ico"
 ];
@@ -39,7 +38,7 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
   if (event.request.method !== "GET") return;
-  if (url.pathname.includes("/analyze_frame") || url.pathname.includes("/events") || url.pathname.includes("/devices") || url.pathname.includes("/health") || url.pathname.includes("/ws")) {
+  if (url.hostname.endsWith("hf.space") || url.pathname.includes("/gradio_api/")) {
     return;
   }
 
