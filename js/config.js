@@ -1,5 +1,5 @@
 const APP_CONFIG = {
-  DEFAULT_API_BASE_URL: "https://your-space-name.hf.space",
+  DEFAULT_API_BASE_URL: "https://lanmai1024-aegisvision-api.hf.space",
   ANALYZE_ENDPOINT: "/analyze_frame",
   HEALTH_ENDPOINT: "/health",
   EVENTS_ENDPOINT: "/events",
